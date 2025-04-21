@@ -4,5 +4,5 @@ import { atom } from "recoil";
 
 export const popupVisible = atom({
 	key: "popup_visible",
-	default: true,
+	default: false,
 });

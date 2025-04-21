@@ -39,7 +39,6 @@ export default function RootPage() {
 				<Button $text="Log in" />
 			</form>
 
-			{/* <SuccessMsg /> */}
 			{popup ? <SuccessMsg /> : null}
 		</div>
 	);
