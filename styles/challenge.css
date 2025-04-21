@@ -1,0 +1,24 @@
+.dayweek-container {
+	@apply flex flex-col items-center justify-center gap-3 rounded-3xl p-2 hover:bg-blue-400;
+}
+.day-style {
+	@apply mr-1 text-3xl font-semibold;
+}
+.week-style {
+	@apply text-sm font-semibold;
+}
+.medicine-name {
+	@apply -mb-1 text-2xl font-bold;
+}
+.medicine-detail {
+	@apply text-sm font-medium;
+}
+.medicine-time {
+	@apply text-lg font-semibold;
+}
+.medicine-default-bg {
+	@apply mb-2 flex h-65 w-full flex-col justify-between rounded-2xl  p-4 peer-checked:w-[90%];
+}
+.medicine-checked {
+	@apply absolute top-0 left-0 -z-1 flex h-65 w-full items-center justify-end rounded-2xl bg-violet-400 pr-[3%];
+}

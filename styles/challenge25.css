@@ -1,0 +1,71 @@
+@layer components {
+	.card_container {
+		@apply h-[550px] w-[220px] px-4 pt-10 md:w-[250px];
+	}
+	.weather_box {
+		@apply mb-3 flex w-full  items-center justify-between rounded-lg border border-x-1 border-t-2 border-b-3 border-black px-3 py-3 md:mb-5;
+	}
+	.weather_box_left {
+		@apply flex flex-col justify-between;
+	}
+	.weather_box_left_title {
+		@apply text-sm font-semibold md:text-base;
+	}
+	.weather_box_left_sub {
+		@apply text-[8px] md:text-[10px];
+	}
+	.weather_box_right {
+		@apply flex items-center justify-between;
+	}
+	.weather_box_right_img {
+		@apply size-8 md:size-10;
+	}
+	.weather_box_right_label {
+		@apply ml-1 text-2xl font-bold md:text-3xl;
+	}
+
+	.circle_btn {
+		@apply relative flex size-6 items-center  justify-center rounded-full border border-b-3 md:size-8;
+	}
+	.circle_btn svg {
+		@apply w-[50%];
+	}
+
+	.tag_box {
+		@apply flex h-[100px] items-center justify-center rounded-2xl border-2 md:h-[120px];
+	}
+	.tag_box svg {
+		@apply size-10 text-white;
+	}
+
+	.friends_box {
+		@apply mb-3 flex items-center justify-between rounded-lg border border-x-1 bg-white px-2 py-2;
+	}
+	.friends_charecter {
+		@apply flex size-10 items-center justify-center overflow-hidden rounded-full bg-amber-400 bg-[url('https://thumb2.photo.mybox.naver.com/3472596835762751056?type=m1280_1280_2&shared_url=ED2WBJXhx/pxiCkS0Zt2Rq5qi68cEdFKssH8yYLrqpCEO72HvomBh0ilK0fW1dImQpKkN/VOfvcssDun1swJwQ4=')] bg-[length:400%];
+	}
+	.friends_charecter_man1 {
+		@apply bg-[position:0%_0%];
+	}
+	.friends_charecter_man2 {
+		@apply bg-[position:65%_0%];
+	}
+	.friends_charecter_woman1 {
+		@apply bg-[position:31%_0%];
+	}
+	.friends_charecter_woman2 {
+		@apply bg-[position:100%_0%];
+	}
+	.friends_charecter_woman3 {
+		@apply bg-[position:31%_33%];
+	}
+	.friends_box_name {
+		@apply text-xs font-semibold md:text-sm;
+	}
+	.friends_box_job {
+		@apply text-[8px] text-neutral-400 md:text-[10px];
+	}
+	.friends_box_invite {
+		@apply rounded-lg border-x-1 border-y-2 bg-amber-400 px-2 py-1 text-[8px] font-bold text-neutral-800 peer-checked:bg-amber-950 peer-checked:text-white md:text-[10px];
+	}
+}

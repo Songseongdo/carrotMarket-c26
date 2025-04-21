@@ -1,0 +1,17 @@
+.container {
+	overflow: hidden;
+}
+.title {
+	font-size: 30px;
+	font-weight: bold;
+	margin-bottom: 30px;
+	text-align: center;
+	width: 100%;
+}
+.list_container {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 30px;
+	padding: 0px 20px;
+}
