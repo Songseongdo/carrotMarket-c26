@@ -5,7 +5,7 @@ import { PASSWORD_MIN_LENGTH } from "../lib/consts";
 
 const correctPassword = (password: string) => password === "abcde12345";
 const emailRegex = new RegExp(/([\w\.\-_]+)?\w+@zod.com/gim);
-const checkPassword = new RegExp(`^(?=.*\\d).{${PASSWORD_MIN_LENGTH},}$`);
+const checkPassword = new RegExp(/(?=.*\d)/);
 
 const formSchema = z.object({
 	email: z.string().toLowerCase().regex(emailRegex, "zod.com 도메인만 가능합니다."),

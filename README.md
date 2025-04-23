@@ -1,6 +1,23 @@
-# 구현 항목
+# 4월 23일 챌린지27
 
-1. email, username, password 에러 처리
-2. 성공 시 팝업
-    > - 팝업 클릭 시 닫힘
-3. Button 컴포넌트에 onClick props 추가
+-   ["@zod.com" 이메일 허용](./app/actions.ts)
+
+    ```
+    const emailRegex = new RegExp(/([\w\.\-_]+)?\w+@zod.com/gim);
+    ```
+
+-   [유저명 5글자 이상](./app/actions.ts)
+
+    ```
+    username: z.string().min(5, "사용자 이름을 최소 5자 이상 입력해 주세요."),
+    ```
+
+-   [비밀번호 10자 이상, 숫자 포함](./app/actions.ts)
+
+    ```
+    const checkPassword = new RegExp(/(?=.*\d)/);
+
+    .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 10자 이상을 입력해주세요.")
+    .regex(checkPassword, "비밀번호는 숫자를 포함해야 합니다.")
+
+    ```
