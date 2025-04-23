@@ -21,3 +21,16 @@
     .regex(checkPassword, "비밀번호는 숫자를 포함해야 합니다.")
 
     ```
+
+-   [로그인 성공](./app/page.tsx)
+
+    ```
+    useEffect(() => {
+    	if (state && state?.success) {
+    		setPopup(true);
+    	}
+    }, [state]);
+
+
+    {popup ? <SuccessMsg /> : null}
+    ```
