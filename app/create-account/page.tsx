@@ -29,7 +29,9 @@ export default function CreateAccount() {
 				/>
 				<Input $name="email" placeholder="이메일" type="email" $errors={getError(state, "email")} />
 
-				<Button $text="가입" />
+				<div className="mt-10">
+					<Button $text="가입" />
+				</div>
 			</form>
 		</div>
 	);

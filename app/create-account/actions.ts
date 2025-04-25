@@ -41,7 +41,7 @@ const formSchema = z
 	})
 	.refine(checkPasswords, { message: "비밀번호를 확인해 주세요", path: ["confirm_password"] });
 
-export async function handleForm(prevState: any, formData: FormData): Promise<FormActionResult> {
+export async function handleForm(_: any, formData: FormData): Promise<FormActionResult> {
 	const data = {
 		username: formData.get("username"),
 		id: formData.get("id"),
