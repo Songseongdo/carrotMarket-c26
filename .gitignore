@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 .next
+.env
+*.db
+*.db-journal
 
 # Editor directories and files
 .vscode/*
