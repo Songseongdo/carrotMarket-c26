@@ -1,4 +1,12 @@
-export type FormFields = "id" | "email" | "password" | "username" | "confirm_password" | "phonenumber" | "verifycode";
+export type FormFields =
+	| "id"
+	| "email"
+	| "password"
+	| "username"
+	| "confirm_password"
+	| "phonenumber"
+	| "verifycode"
+	| "prev_password";
 export type FormActionResult =
 	| null
 	| { success: true }
