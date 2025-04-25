@@ -14,11 +14,12 @@ const publicOnyUrls: IRoutes = {
 export async function middleware(request: NextRequest) {
 	const session = await getSession();
 	const exists = publicOnyUrls[request.nextUrl.pathname];
-	if (exists) {
-		if (session.id) {
-			return NextResponse.redirect(new URL("/profile", request.url));
-		}
-	}
+
+	// if (exists) {
+	// 	if (session.id) {
+	// 		return NextResponse.redirect(new URL("/profile", request.url));
+	// 	}
+	// }
 }
 
 export const config = {

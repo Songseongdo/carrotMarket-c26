@@ -7,6 +7,7 @@ import db from "../../lib/db";
 import getSession from "../../lib/session";
 import { redirect } from "next/navigation";
 import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../lib/consts";
+import { doLogin } from "../../util/async";
 
 const formSchema = z.object({
 	id: z.string().superRefine(async (userId, ctx) => {
@@ -51,13 +52,16 @@ export async function handleForm(_: any, formData: FormData): Promise<FormAction
 			},
 		});
 
-		const ok = await bcrypt.compare(result.data.password, user!.password ?? "");
-		if (ok) {
-			const session = await getSession();
-			session.id = user!.id;
-			await session.save();
-
-			redirect("/profile");
+		if (user) {
+			const ok = await bcrypt.compare(result.data.password, user.password ?? "");
+			if (ok) {
+				return doLogin(user.id);
+			} else {
+				return {
+					success: false,
+					fieldErrors: { password: ["비밀번호를 확인해 주세요."] },
+				};
+			}
 		} else {
 			return {
 				success: false,

@@ -21,7 +21,7 @@ export default function Login() {
 				<Input $name="id" placeholder="아이디" type="text" $errors={getError(state, "id")} />
 				<Input $name="password" placeholder="비밀번호" type="password" $errors={getError(state, "password")} />
 
-				<div className="mt-10">
+				<div className="mt-10 h-10">
 					<Button $text="로그인" />
 				</div>
 			</form>

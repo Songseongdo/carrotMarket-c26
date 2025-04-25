@@ -5,8 +5,7 @@ import { z } from "zod";
 import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../lib/consts";
 import { FormActionResult } from "../../util";
 import db from "../../lib/db";
-import getSession from "../../lib/session";
-import { redirect } from "next/navigation";
+import { doLogin } from "../../util/async";
 
 const checkPasswords = ({ password, confirm_password }: { password: string; confirm_password: string }) =>
 	password === confirm_password;
@@ -71,10 +70,6 @@ export async function handleForm(_: any, formData: FormData): Promise<FormAction
 			},
 		});
 
-		const session = await getSession();
-		session.id = user.id;
-		await session.save();
-
-		redirect("/profile");
+		return doLogin(user.id);
 	}
 }
