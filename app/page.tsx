@@ -1,45 +1,34 @@
 "use client";
 
-import Input from "../components/input";
+import Link from "next/link";
 import Button from "../components/button";
-import { createAccount } from "./actions";
-import { useFormState } from "react-dom";
-
-import SuccessMsg from "../components/success-msg";
-import { useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { popupVisible } from "../state";
 
 export default function RootPage() {
-	const [state, action] = useFormState(createAccount, null);
-	const [popup, setPopup] = useRecoilState(popupVisible);
-
-	type FieldName = "email" | "username" | "password";
-	const getError = (name: FieldName) => {
-		if (state && !state.success && "error" in state) {
-			return state.error?.[name] ?? [];
-		}
-		return [];
-	};
-
-	useEffect(() => {
-		if (state && state?.success) {
-			setPopup(true);
-		}
-	}, [state]);
-
 	return (
 		<div className="flex flex-col items-center min-h-screen pt-[200px]">
-			<div className="text-[60px] mb-10">🔥</div>
+			<div className="text-xl mb-10">로그인하고 편리하게 이용하세요.</div>
 
-			<form action={action} className="flex flex-col gap-5 w-xs">
-				<Input $name="email" $errors={getError("email")} type="email" placeholder="Email" />
-				<Input $name="username" $errors={getError("username")} type="text" placeholder="Username" />
-				<Input $name="password" $errors={getError("password")} type="password" placeholder="Password" />
-				<Button $text="Log in" />
-			</form>
-
-			{popup ? <SuccessMsg /> : null}
+			<div className="flex gap-5 w-xs mb-3">
+				<Link
+					href="/login"
+					className="flex justify-center items-center w-full h-10 rounded-full disabled:bg-neutral-600 disabled:text-neutral-300 disabled:cursor-not-allowed bg-neutral-400 hover:bg-neutral-500"
+				>
+					로그인
+				</Link>
+			</div>
+			<div className="flex justify-between w-[250px] text-xs">
+				<Link href="/" className="hover:border-b-1">
+					아이디 찾기
+				</Link>
+				<div>|</div>
+				<Link href="/" className="hover:border-b-1">
+					비밀번호 찾기
+				</Link>
+				<div>|</div>
+				<Link href="/create-account" className="hover:border-b-1">
+					회원가입
+				</Link>
+			</div>
 		</div>
 	);
 }
