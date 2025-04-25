@@ -13,6 +13,7 @@ const _Input = forwardRef<HTMLInputElement, IFromInputProps & InputHTMLAttribute
 					ref={ref}
 					className="p-5 pl-10 pb-6 bg-transparent rounded-full w-full h-10 focus:outline-none ring-2 focus:ring-4 ring-neutral-200 focus:ring-orange-500 border-none placeholder:text-neutral-400"
 					name={$name}
+					key={$name}
 					{...rest}
 				/>
 
@@ -26,6 +27,9 @@ const _Input = forwardRef<HTMLInputElement, IFromInputProps & InputHTMLAttribute
 					aria-hidden="true"
 					className="size-4 absolute left-3 top-[15px]  text-neutral-400"
 				>
+					{$name === "id" ? (
+						<path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z"></path>
+					) : null}
 					{$name === "email" ? (
 						<path
 							strokeLinecap="round"
@@ -40,7 +44,7 @@ const _Input = forwardRef<HTMLInputElement, IFromInputProps & InputHTMLAttribute
 							d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
 						/>
 					) : null}
-					{$name === "password" ? (
+					{$name === "password" || $name === "confirm_password" ? (
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
@@ -50,7 +54,7 @@ const _Input = forwardRef<HTMLInputElement, IFromInputProps & InputHTMLAttribute
 				</svg>
 
 				{$errors?.map((error, index) => (
-					<span key={index} className="text-red-500 font-medium">
+					<span key={index} className="text-red-500 font-medium pl-2">
 						{error}
 					</span>
 				))}
