@@ -1,13 +1,22 @@
 import TweetList from "@/components/tweet-list";
+import { TWEET_PAGE_SIZE } from "@/lib/consts";
 import db from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma";
-import getSession from "@/lib/session";
 
 async function getTweetInfo() {
 	const tweets = db.tweet.findMany({
 		orderBy: {
-			create_at: "desc",
+			create_at: "asc",
 		},
+		include: {
+			Like: {
+				select: {
+					id: true,
+					userId: true,
+				},
+			},
+		},
+		take: TWEET_PAGE_SIZE,
 	});
 	return tweets;
 }
@@ -18,7 +27,7 @@ export default async function Tweet() {
 	const initialTweets = await getTweetInfo();
 
 	return (
-		<div>
+		<div className="w-[70%]">
 			<TweetList initialTweets={initialTweets} />
 		</div>
 	);
