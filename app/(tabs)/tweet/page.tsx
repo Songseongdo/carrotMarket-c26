@@ -6,7 +6,7 @@ import { Prisma } from "@/lib/generated/prisma";
 async function getTweetInfo() {
 	const tweets = db.tweet.findMany({
 		orderBy: {
-			create_at: "asc",
+			create_at: "desc",
 		},
 		include: {
 			Like: {

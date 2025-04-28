@@ -6,7 +6,7 @@ import db from "@/lib/db";
 export async function getMoreTweets(page: number) {
 	const tweets = db.tweet.findMany({
 		orderBy: {
-			create_at: "asc",
+			create_at: "desc",
 		},
 		include: {
 			Like: {
@@ -16,7 +16,7 @@ export async function getMoreTweets(page: number) {
 				},
 			},
 		},
-		skip: page * TWEET_PAGE_SIZE,
+		skip: (page - 1) * TWEET_PAGE_SIZE,
 		take: TWEET_PAGE_SIZE,
 	});
 	return tweets;
@@ -32,4 +32,9 @@ export async function getTweetUserInfo(userId: number) {
 		},
 	});
 	return user;
+}
+
+export async function getTotalCount() {
+	const count = await db.tweet.count();
+	return count;
 }
