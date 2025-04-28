@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Input from "../../components/input";
-import Button from "../../components/button";
+import Input from "@/components/input";
+import Button from "@/components/button";
 import { handleForm } from "./actions";
-import { FormActionResult, getError } from "../../util";
+import { FormActionResult, getError } from "@/util";
 import { useFormState } from "react-dom";
 
 export default function CreateAccount() {

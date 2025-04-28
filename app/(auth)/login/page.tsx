@@ -3,9 +3,9 @@
 import { useFormState } from "react-dom";
 import { handleForm } from "./actions";
 import Link from "next/link";
-import Input from "../../components/input";
-import Button from "../../components/button";
-import { FormActionResult, getError } from "../../util";
+import Input from "@/components/input";
+import Button from "@/components/button";
+import { FormActionResult, getError } from "@/util";
 
 export default function Login() {
 	const [state, dispatch] = useFormState<FormActionResult, FormData>(handleForm, null);

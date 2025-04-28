@@ -2,10 +2,10 @@
 
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../lib/consts";
-import { FormActionResult } from "../../util";
-import db from "../../lib/db";
-import { doLogin } from "../../util/async";
+import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../../lib/consts";
+import { FormActionResult } from "../../../util";
+import db from "../../../lib/db";
+import { doLogin } from "../../../util/async";
 
 const checkPasswords = ({ password, confirm_password }: { password: string; confirm_password: string }) =>
 	password === confirm_password;

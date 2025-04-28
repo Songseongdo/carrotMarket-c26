@@ -2,10 +2,10 @@
 
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../../lib/consts";
-import { FormActionResult } from "../../../util";
-import db from "../../../lib/db";
-import getSession from "../../../lib/session";
+import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../../../lib/consts";
+import { FormActionResult } from "../../../../util";
+import db from "../../../../lib/db";
+import getSession from "../../../../lib/session";
 import { SERVER_PROPS_GET_INIT_PROPS_CONFLICT } from "next/dist/lib/constants";
 
 const checkPasswords = ({ password, confirm_password }: { password: string; confirm_password: string }) =>
