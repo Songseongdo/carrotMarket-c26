@@ -24,6 +24,6 @@ jobs:
                           repo: context.repo.repo,
                           pull_number: context.payload.pull_request.number,
                           title: `[자동] ${branchName} - ${prTitle}`,
-                          body: "회원가입, 로그인, 프로필 페이지 구현"
+                          body: "메인 페이지 구현, 트윗 페이지 구현"
                         });
                       }
