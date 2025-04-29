@@ -21,20 +21,3 @@ export async function getMoreTweets(page: number) {
 	});
 	return tweets;
 }
-
-export async function getTweetUserInfo(userId: number) {
-	const user = db.user.findUnique({
-		where: {
-			id: userId,
-		},
-		select: {
-			username: true,
-		},
-	});
-	return user;
-}
-
-export async function getTotalCount() {
-	const count = await db.tweet.count();
-	return count;
-}

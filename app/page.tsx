@@ -5,7 +5,7 @@ import Button from "../components/button";
 import getSession from "../lib/session";
 import db from "../lib/db";
 import { redirect } from "next/navigation";
-import Tweet from "./(tabs)/tweet/page";
+import Tweets from "./(tabs)/tweets/page";
 
 async function getUser() {
 	const sesstion = await getSession();
@@ -31,7 +31,7 @@ export default async function RootPage() {
 	};
 
 	return (
-		<div className="flex flex-col items-center min-h-screen pt-[200px]">
+		<div className="flex flex-col items-center min-h-screen pt-10">
 			{user ? (
 				<>
 					<div className="flex items-center justify-center w-full">
@@ -74,7 +74,7 @@ export default async function RootPage() {
 							<Button $text="Log Out"></Button>
 						</form>
 					</div>
-					<Tweet />
+					<Tweets />
 				</>
 			) : (
 				<>

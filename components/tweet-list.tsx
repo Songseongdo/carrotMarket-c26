@@ -1,11 +1,12 @@
 "use client";
 
-import { InitialTweets } from "@/app/(tabs)/tweet/page";
+import { InitialTweets } from "@/app/(tabs)/tweets/page";
 import { useEffect, useRef, useState } from "react";
 import ListTweet from "./list-tweet";
 import Pagination from "./pagination";
-import { getMoreTweets, getTotalCount } from "@/app/(tabs)/tweet/actions";
+import { getMoreTweets } from "@/app/(tabs)/tweets/actions";
 import { TWEET_PAGE_SIZE } from "@/lib/consts";
+import { getTweetsTotalCount } from "@/util/async";
 
 interface ITweetListProps {
 	initialTweets: InitialTweets;
@@ -18,7 +19,7 @@ export default function TweetList({ initialTweets }: ITweetListProps) {
 
 	useEffect(() => {
 		const getCount = async () => {
-			const count = await getTotalCount();
+			const count = await getTweetsTotalCount();
 			setTotalCount(count);
 		};
 
