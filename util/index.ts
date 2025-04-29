@@ -18,3 +18,24 @@ export function getError(state: FormActionResult, name: FormFields): string[] {
 	}
 	return [];
 }
+
+export function formatToTimeAgo(date: Date): string {
+	const minInMs = 1000 * 60;
+	const hourInMs = 1000 * 60 * 60;
+	const dayInMs = 1000 * 60 * 60 * 24;
+
+	const time = new Date(date).getTime();
+	const now = new Date().getTime();
+	const diff = now - time;
+	const formatter = new Intl.RelativeTimeFormat("ko");
+
+	if (diff < minInMs) {
+		return formatter.format(Math.round(-diff), "second");
+	} else if (diff < hourInMs) {
+		return formatter.format(Math.round(-diff / minInMs), "minute");
+	} else if (diff < dayInMs) {
+		return formatter.format(Math.round(-diff / hourInMs), "hour");
+	} else {
+		return formatter.format(Math.round(-diff / dayInMs), "day");
+	}
+}

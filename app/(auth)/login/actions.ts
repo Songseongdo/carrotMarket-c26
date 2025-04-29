@@ -2,12 +2,12 @@
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { FormActionResult } from "../../util";
-import db from "../../lib/db";
-import getSession from "../../lib/session";
+import { FormActionResult } from "@/util";
+import db from "@/lib/db";
+import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
-import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "../../lib/consts";
-import { doLogin } from "../../util/async";
+import { PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "@/lib/consts";
+import { doLogin } from "@/util/async";
 
 const formSchema = z.object({
 	id: z.string().superRefine(async (userId, ctx) => {

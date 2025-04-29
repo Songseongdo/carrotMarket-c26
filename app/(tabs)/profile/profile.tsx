@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import Button from "../../components/button";
-import Input from "../../components/input";
+import Button from "../../../components/button";
+import Input from "../../../components/input";
 import { handleForm, logout } from "./actions";
-import { FormActionResult } from "../../util";
+import { FormActionResult } from "../../../util";
 import { useFormState } from "react-dom";
 import { useEffect } from "react";
 import PasswordModify from "./components/password-modify";
 import { useRecoilState } from "recoil";
-import { popupVisible } from "../../state";
+import { popupVisible } from "../../../state";
 
 interface IProfile {
 	userId: string;
