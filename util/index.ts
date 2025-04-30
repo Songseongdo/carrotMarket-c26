@@ -33,7 +33,7 @@ export function formatToTimeAgo(date: Date): string {
 	// 초단위 일때 에러?
 
 	if (diff < minInMs) {
-		return formatter.format(Math.round(-diff), "second");
+		return "1분 전";
 	} else if (diff < hourInMs) {
 		return formatter.format(Math.round(-diff / minInMs), "minute");
 	} else if (diff < dayInMs) {
