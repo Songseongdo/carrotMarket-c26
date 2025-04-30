@@ -27,7 +27,7 @@ export default async function Tweets() {
 	const initialTweets = await getTweetInfo();
 
 	return (
-		<div className="w-[70%]">
+		<div className="w-full">
 			<TweetList initialTweets={initialTweets} />
 		</div>
 	);

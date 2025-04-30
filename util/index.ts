@@ -6,7 +6,8 @@ export type FormFields =
 	| "confirm_password"
 	| "phonenumber"
 	| "verifycode"
-	| "prev_password";
+	| "prev_password"
+	| "comment";
 export type FormActionResult =
 	| null
 	| { success: true }
@@ -29,8 +30,10 @@ export function formatToTimeAgo(date: Date): string {
 	const diff = now - time;
 	const formatter = new Intl.RelativeTimeFormat("ko");
 
+	// 초단위 일때 에러?
+
 	if (diff < minInMs) {
-		return formatter.format(Math.round(-diff), "second");
+		return "1분 전";
 	} else if (diff < hourInMs) {
 		return formatter.format(Math.round(-diff / minInMs), "minute");
 	} else if (diff < dayInMs) {
