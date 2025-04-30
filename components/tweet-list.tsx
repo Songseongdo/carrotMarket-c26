@@ -37,7 +37,7 @@ export default function TweetList({ initialTweets }: ITweetListProps) {
 	};
 
 	return (
-		<div className="p-5 flex flex-col">
+		<div className="flex flex-col">
 			{Tweets.map((tweet) => (
 				<ListTweet key={tweet.id} {...tweet} />
 			))}

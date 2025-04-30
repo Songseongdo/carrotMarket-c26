@@ -6,6 +6,7 @@ import getSession from "../lib/session";
 import db from "../lib/db";
 import { redirect } from "next/navigation";
 import Tweets from "./(tabs)/tweets/page";
+import Tweet from "@/components/tweet";
 
 async function getUser() {
 	const sesstion = await getSession();
@@ -74,6 +75,10 @@ export default async function RootPage() {
 							<Button $text="Log Out"></Button>
 						</form>
 					</div>
+					<div className="mt-3 w-full">
+						<Tweet />
+					</div>
+
 					<Tweets />
 				</>
 			) : (

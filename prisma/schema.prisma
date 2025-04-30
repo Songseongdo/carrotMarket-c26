@@ -30,6 +30,7 @@ model Tweet {
   user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId     Int?
   Like       Like[]
+  photo      String?
 }
 
 model Like {
