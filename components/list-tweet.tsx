@@ -15,13 +15,14 @@ interface IListTweetProps {
 	create_at: Date;
 	userId: number | null;
 	Like: ILike[];
+	photo: string | null;
 }
 
 interface IUserInfo {
 	username: string;
 }
 
-export default function ListTweet({ id, tweet, create_at, userId, Like }: IListTweetProps) {
+export default function ListTweet({ id, tweet, create_at, userId, Like, photo }: IListTweetProps) {
 	const [user, setUser] = useState<IUserInfo | null>(null);
 
 	useEffect(() => {
@@ -33,11 +34,13 @@ export default function ListTweet({ id, tweet, create_at, userId, Like }: IListT
 		};
 		fetchData();
 	}, [userId]);
+
 	return (
 		<div className="border mt-[-1px] border-neutral-600 p-2">
 			<div className="flex flex-col gap-5">
 				<div className="flex gap-3">
 					<UserIcon className="w-8" />
+
 					<div className="flex flex-col justify-center">
 						<div className="flex gap-2 items-center">
 							<div>{user?.username || "알 수 없는 사용자"}</div>
@@ -52,7 +55,11 @@ export default function ListTweet({ id, tweet, create_at, userId, Like }: IListT
 				<div className="w-full pl-8">
 					<div className="w-full">
 						<Link href={`/tweets/${id}`}>
-							<PhotoIcon className="size-full" viewBox="1.4 3.6 21.3 16.7" />
+							{photo ? (
+								<img src={photo} className="rounded-3xl" />
+							) : (
+								<PhotoIcon className="size-full" viewBox="1.4 3.6 21.3 16.7" />
+							)}
 						</Link>
 
 						<div className="flex items-center justify-between px-5 mt-3 text-neutral-400 text-xs">

@@ -2,12 +2,36 @@
 
 import Input from "./input";
 import Button from "./button";
-import { useState } from "react";
+import { use, useRef, useState } from "react";
 import { PhotoIcon, GifIcon } from "@heroicons/react/24/outline";
+import { uploadTweet } from "@/app/(tabs)/tweets/actions";
+import { FormActionResult } from "@/util";
+import { useFormState } from "react-dom";
+
+export async function uploadToSignedUrl(signedUrl: string, file: File) {
+	try {
+		const res = await fetch(signedUrl, {
+			method: "PUT",
+			headers: {
+				"Content-Type": file.type,
+			},
+			body: file,
+		});
+
+		return res.ok;
+	} catch (err) {
+		console.error("업로드 에러", err);
+		return false;
+	}
+}
 
 export default function Tweet() {
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [input, setInput] = useState("");
 	const [preview, setPreview] = useState("");
+	const [uploading, setUploading] = useState(false);
+	const [signedUploadUrl, setSignedUploadUrl] = useState("");
+	const [uuid, setUuid] = useState("");
 
 	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const {
@@ -15,7 +39,7 @@ export default function Tweet() {
 		} = event;
 		setInput(value);
 	};
-	const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const onImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const {
 			target: { files },
 		} = event;
@@ -34,6 +58,24 @@ export default function Tweet() {
 
 		const url = URL.createObjectURL(file);
 		setPreview(url);
+
+		// 유니크한 이름으로 업로드 url 생성
+		const formData = new FormData();
+		const ext = file.name.split(".").pop();
+		const uniqueName = `${crypto.randomUUID()}.${ext}`;
+		setUuid(uniqueName);
+		formData.append("filename", uniqueName);
+		formData.append("contentType", file.type);
+
+		const { getSignedUploadUrl } = await import("@/app/(tabs)/tweets/actions");
+		const result = await getSignedUploadUrl(formData);
+
+		if (!result?.url) {
+			alert("URL 생성 실패");
+			return;
+		}
+
+		setSignedUploadUrl(result.url);
 	};
 	const checkInputDisabled = (): boolean => {
 		if (input.length !== 0 || preview !== "") {
@@ -42,10 +84,35 @@ export default function Tweet() {
 		return true;
 	};
 
+	const interceptAction = async (_: any, formData: FormData): Promise<FormActionResult> => {
+		setUploading(true);
+
+		const file = inputRef.current?.files?.[0];
+		if (!file) {
+			alert("파일 선택 필요");
+			return {
+				success: true,
+			};
+		}
+
+		const success = await uploadToSignedUrl(signedUploadUrl, file);
+		if (success) {
+			const publicUrl = `https://${process.env.NEXT_PUBLIC_WORK_DOMAIN}/${uuid}`;
+			formData.set("url", publicUrl);
+		} else {
+			alert("업로드 실패");
+		}
+
+		setUploading(false);
+
+		return uploadTweet(_, formData);
+	};
+	const [state, dispatch] = useFormState<FormActionResult, FormData>(interceptAction, null);
+
 	return (
 		<div className="border  border-neutral-600 w-full rounded-t-2xl">
-			<form>
-				<Input $name="comment" placeholder="What's happening?" onChange={onChange} />
+			<form action={dispatch}>
+				<Input $name="comment" required placeholder="What's happening?" onChange={onChange} />
 
 				<div
 					className="aspect-square mt-3 rounded-2xl overflow-hidden"
@@ -63,6 +130,7 @@ export default function Tweet() {
 							<PhotoIcon className="size-5" />
 						</label>
 						<input
+							ref={inputRef}
 							onChange={onImageChange}
 							type="file"
 							id="photo"

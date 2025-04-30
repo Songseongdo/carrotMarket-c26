@@ -48,7 +48,11 @@ export default async function TweetsDetail({ params }: { params: { id: string } 
 					<div className="w-full pl-8">
 						<div className="w-full">
 							<Link href={`/tweets/${id}`}>
-								<PhotoIcon className="size-full" viewBox="1.4 3.6 21.3 16.7" />
+								{TweetInfo?.photo ? (
+									<img src={TweetInfo?.photo} className="rounded-3xl" />
+								) : (
+									<PhotoIcon className="size-full" viewBox="1.4 3.6 21.3 16.7" />
+								)}
 							</Link>
 
 							<div className="flex items-center justify-between px-5 text-2xl mt-3 text-neutral-400">
