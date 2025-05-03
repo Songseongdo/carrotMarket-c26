@@ -1,17 +1,26 @@
 import db from '@/lib/db';
 import { Prisma } from '@/lib/generated/prisma';
 import getSession from '@/lib/session';
+import { unstable_cache as NextCache } from 'next/cache';
 
 export async function getTweetInfo(id: number) {
-  new Promise((resolve) => setTimeout(() => resolve, 5000));
-
   const tweet = db.tweet.findUnique({
     where: {
       id,
     },
     include: {
-      Like: true,
-      Response: true,
+      Like: {
+        select: {
+          id: true,
+          userId: true,
+        },
+      },
+      Response: {
+        select: {
+          id: true,
+          userId: true,
+        },
+      },
     },
   });
   return tweet;
@@ -29,7 +38,6 @@ export async function getIsOwner(userId: number) {
 }
 
 export async function getTweetUserInfo(userId: number) {
-  console.log('this');
   if (!userId) {
     return null;
   }
@@ -40,3 +48,17 @@ export async function getTweetUserInfo(userId: number) {
     },
   });
 }
+
+export const getCachedtweetInfo = NextCache(
+  async (id: number) => getTweetInfo(id),
+  ['tweet-info'],
+  {
+    tags: ['tweets'],
+    revalidate: 30,
+  },
+);
+export const getCachedtweetUserInfo = NextCache(
+  async (id: number) => getTweetUserInfo(id),
+  ['tweet-userinfo'],
+  { tags: ['tweets'], revalidate: 30 },
+);

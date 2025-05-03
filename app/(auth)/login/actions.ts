@@ -55,7 +55,7 @@ export async function handleForm(_: any, formData: FormData): Promise<FormAction
     if (user) {
       const ok = await bcrypt.compare(result.data.password, user.password ?? '');
       if (ok) {
-        return doLogin({ id: user.id, username: user.username, avatar: user.avatar || 0 });
+        return doLogin({ id: user.id });
       } else {
         return {
           success: false,

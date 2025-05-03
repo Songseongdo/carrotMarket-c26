@@ -4,7 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PhotoIcon, GifIcon, UserIcon } from '@heroicons/react/24/outline';
-import { getSignedUploadUrl, getUerInfo, uploadReply } from '@/app/(tabs)/tweets/actions';
+import {
+  getSignedUploadUrl,
+  getUserInfo,
+  uploadReply,
+  UserInfoType,
+} from '@/app/(tabs)/tweets/actions';
 import Input from './input';
 import Button from './button';
 import { replySchema, ReplyType } from '@/app/(tabs)/tweets/schema';
@@ -28,11 +33,11 @@ export default function Reply({ tweetId }: IReplyProps) {
   } = useForm<ReplyType>({
     resolver: zodResolver(replySchema),
   });
-  const [userInfo, setUserInfo] = useState<null | ISessionContent>(null);
+  const [userInfo, setUserInfo] = useState<null | UserInfoType>(null);
 
   useEffect(() => {
     (async () => {
-      const info = await getUerInfo();
+      const info = await getUserInfo();
       setUserInfo(info);
     })();
   }, []);
@@ -105,10 +110,7 @@ export default function Reply({ tweetId }: IReplyProps) {
     newForm.set('userId', userInfo?.id + '');
     newForm.set('tweetId', tweetId + '');
 
-    const result = await uploadReply(newForm);
-    if (result?.success) {
-      alert('등록 되었습니다.');
-    }
+    await uploadReply(newForm);
   });
   const onValid = async () => {
     await onSubmit();
@@ -119,11 +121,7 @@ export default function Reply({ tweetId }: IReplyProps) {
       {userInfo ? (
         <form action={onValid}>
           <div className="absolute size-5 left-3 top-3">
-            {userInfo?.avatar === 0 ? (
-              <UserIcon />
-            ) : (
-              <Image src={userInfo?.avatar + ''} alt="이미지" className="object-cover" fill />
-            )}
+            <UserIcon />
           </div>
           <Input
             $name="reply"

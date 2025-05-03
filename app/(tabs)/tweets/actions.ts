@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { latestReplySchema } from './schema';
 import { Prisma } from '@/lib/generated/prisma';
 import { revalidateTag } from 'next/cache';
+import { use } from 'react';
 
 const s3 = new S3Client({
   endpoint: `https://${process.env.CF_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -53,6 +54,12 @@ export async function getMoreTweets(page: number) {
     },
     include: {
       Like: {
+        select: {
+          id: true,
+          userId: true,
+        },
+      },
+      Response: {
         select: {
           id: true,
           userId: true,
@@ -125,7 +132,7 @@ export async function uploadReply(formData: FormData): Promise<FormActionResult>
       },
     });
     if (reply) {
-      revalidateTag('tweet');
+      revalidateTag('tweets');
 
       return { success: true };
     } else {
@@ -142,10 +149,21 @@ export async function uploadReply(formData: FormData): Promise<FormActionResult>
   }
 }
 
-export async function getUerInfo() {
+export async function getUserInfo() {
   const session = await getSession();
-  return session;
+  const user = await db.user.findUnique({
+    where: {
+      id: session.id,
+    },
+    select: {
+      id: true,
+      username: true,
+      avatar: true,
+    },
+  });
+  return user;
 }
+export type UserInfoType = Prisma.PromiseReturnType<typeof getUserInfo>;
 
 export async function getReplyInfo(id: number) {
   const reply = await db.response.findUnique({
@@ -160,3 +178,33 @@ export async function getReplyInfo(id: number) {
   return reply;
 }
 export type ReplyType = Prisma.PromiseReturnType<typeof getReplyInfo>;
+
+export async function setUnlike(id: number) {
+  const like = await db.like.delete({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+    },
+  });
+  if (like) {
+    revalidateTag('tweets');
+  }
+  return like;
+}
+export async function setLike(userId: number, tweetId: number) {
+  const like = await db.like.create({
+    data: {
+      userId: userId,
+      tweetId: tweetId,
+    },
+    select: {
+      id: true,
+    },
+  });
+  if (like) {
+    revalidateTag('tweets');
+  }
+  return like;
+}

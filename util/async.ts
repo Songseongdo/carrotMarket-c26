@@ -8,14 +8,10 @@ import { Prisma } from '@/lib/generated/prisma';
 
 interface IDologinProps {
   id: number;
-  username: string;
-  avatar?: number;
 }
-export async function doLogin({ id, username, avatar }: IDologinProps) {
+export async function doLogin({ id }: IDologinProps) {
   const session = await getSession();
   session.id = id;
-  session.username = username;
-  session.avatar = avatar;
   await session.save();
 
   return redirect('/profile');

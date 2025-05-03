@@ -77,6 +77,6 @@ export async function handleForm(_: any, formData: FormData): Promise<FormAction
       },
     });
 
-    return doLogin({ id: user.id, username: user.username, avatar: user.avatar || 0 });
+    return doLogin({ id: user.id });
   }
 }
