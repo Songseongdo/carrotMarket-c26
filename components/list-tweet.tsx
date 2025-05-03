@@ -24,6 +24,7 @@ interface IListTweetProps {
   Like: ILike[];
   photo: string | null;
   Response: IResponse[];
+  replyCount: number;
 }
 
 interface IUserInfo {
@@ -38,6 +39,7 @@ export default function ListTweet({
   Like,
   photo,
   Response,
+  replyCount,
 }: IListTweetProps) {
   const [tweetUser, setTweetUser] = useState<IUserInfo | null>(null);
   const [userInfo, setUserInfo] = useState<number | null>(null);
@@ -124,7 +126,7 @@ export default function ListTweet({
                 data-tip="Reply"
               >
                 <ChatBubbleOvalLeftIcon className="size-5" />
-                <div className="">{Response.length}</div>
+                <div className="">{replyCount}</div>
               </div>
               <div
                 className="flex items-center gap-1 hover:cursor-pointer tooltip tooltip-secondary"

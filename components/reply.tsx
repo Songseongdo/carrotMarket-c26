@@ -14,13 +14,12 @@ import Input from './input';
 import Button from './button';
 import { replySchema, ReplyType } from '@/app/(tabs)/tweets/schema';
 import { uploadToSignedUrl } from '@/util/async';
-import Image from 'next/image';
-import { ISessionContent } from '@/lib/session';
 
 interface IReplyProps {
   tweetId: number;
+  callSumit: () => void;
 }
-export default function Reply({ tweetId }: IReplyProps) {
+export default function Reply({ tweetId, callSumit }: IReplyProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState('');
   const [preview, setPreview] = useState('');
@@ -110,6 +109,7 @@ export default function Reply({ tweetId }: IReplyProps) {
     newForm.set('userId', userInfo?.id + '');
     newForm.set('tweetId', tweetId + '');
 
+    callSumit();
     await uploadReply(newForm);
   });
   const onValid = async () => {

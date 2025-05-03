@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Reply from '@/components/reply';
 import ReplyList from '@/components/reply-list';
 import ListTweet from '@/components/list-tweet';
+import TweetClientView from '@/components/tweet-client-view';
 
 export const dynamic = 'auto'; // 기본
 
@@ -28,11 +29,13 @@ export default async function TweetsDetail({ params }: { params: { id: string } 
         </Link>
       </div>
 
-      <ListTweet {...tweetInfo} />
+      <TweetClientView tweetInfo={tweetInfo} />
+
+      {/* <ListTweet {...tweetInfo} addOptimisticReply={addOptimisticReply} />
 
       <div className="w-full mt-5">
-        <Reply tweetId={tweetInfo.id} />
-      </div>
+        <Reply tweetId={tweetInfo.id} onSubmit={() => addOptimisticReply(true)} />
+      </div> */}
 
       <div>
         {tweetInfo.Response.map((reply) => (

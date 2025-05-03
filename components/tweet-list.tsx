@@ -42,7 +42,9 @@ export default function TweetList({ initialTweets }: ITweetListProps) {
 
   return (
     <div className="flex flex-col">
-      {Tweets?.map((tweet) => <ListTweet key={tweet.id} {...tweet} />)}
+      {Tweets?.map((tweet) => (
+        <ListTweet key={tweet.id} {...tweet} replyCount={tweet.Response.length} />
+      ))}
       <Pagination
         totalCount={totalCount}
         pageSize={TWEET_PAGE_SIZE}
