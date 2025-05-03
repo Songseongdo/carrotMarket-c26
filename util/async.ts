@@ -6,9 +6,16 @@ import db from '@/lib/db';
 import { unstable_cache as nextCatch } from 'next/cache';
 import { Prisma } from '@/lib/generated/prisma';
 
-export async function doLogin(id: number) {
+interface IDologinProps {
+  id: number;
+  username: string;
+  avatar?: number;
+}
+export async function doLogin({ id, username, avatar }: IDologinProps) {
   const session = await getSession();
   session.id = id;
+  session.username = username;
+  session.avatar = avatar;
   await session.save();
 
   return redirect('/profile');
@@ -30,22 +37,6 @@ export async function getTweetsTotalCount() {
   const count = await db.tweet.count();
   return count;
 }
-
-export async function getSessionUserInfo() {
-  const session = await getSession();
-  const user = db.user.findUnique({
-    where: {
-      id: session.id,
-    },
-    select: {
-      username: true,
-      avatar: true,
-    },
-  });
-
-  return user;
-}
-export type UserInfoType = Prisma.PromiseReturnType<typeof getSessionUserInfo>;
 
 // 이미지 업로드
 export async function uploadToSignedUrl(signedUrl: string, file: File) {

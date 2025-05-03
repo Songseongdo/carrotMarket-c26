@@ -4,14 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PhotoIcon, GifIcon, UserIcon } from '@heroicons/react/24/outline';
-import { getSignedUploadUrl, uploadReply } from '@/app/(tabs)/tweets/actions';
+import { getSignedUploadUrl, getUerInfo, uploadReply } from '@/app/(tabs)/tweets/actions';
 import Input from './input';
 import Button from './button';
-import { tweetSchema, TweetType } from '@/app/(tabs)/tweets/schema';
-import { getSessionUserInfo, uploadToSignedUrl, UserInfoType } from '@/util/async';
+import { replySchema, ReplyType } from '@/app/(tabs)/tweets/schema';
+import { uploadToSignedUrl } from '@/util/async';
 import Image from 'next/image';
+import { ISessionContent } from '@/lib/session';
 
-export default function Reply() {
+interface IReplyProps {
+  tweetId: number;
+}
+export default function Reply({ tweetId }: IReplyProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState('');
   const [preview, setPreview] = useState('');
@@ -21,17 +25,15 @@ export default function Reply() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TweetType>({
-    resolver: zodResolver(tweetSchema),
+  } = useForm<ReplyType>({
+    resolver: zodResolver(replySchema),
   });
-  const [userInfo, setUserInfo] = useState<null | UserInfoType>(null);
+  const [userInfo, setUserInfo] = useState<null | ISessionContent>(null);
 
   useEffect(() => {
     (async () => {
-      const info = await getSessionUserInfo();
-      console.log(info);
-
-      return setUserInfo(info);
+      const info = await getUerInfo();
+      setUserInfo(info);
     })();
   }, []);
 
@@ -84,7 +86,7 @@ export default function Reply() {
 
     setSignedUploadUrl(result.url);
   };
-  const onSubmit = handleSubmit(async (data: TweetType) => {
+  const onSubmit = handleSubmit(async (data: ReplyType) => {
     const file = inputRef.current?.files?.[0];
     const newForm = new FormData();
 
@@ -100,9 +102,12 @@ export default function Reply() {
       newForm.set('url', '');
     }
     newForm.set('reply', data.reply);
+    newForm.set('userId', userInfo?.id + '');
+    newForm.set('tweetId', tweetId + '');
 
-    const errors = await uploadReply(newForm);
-    if (errors) {
+    const result = await uploadReply(newForm);
+    if (result?.success) {
+      alert('등록 되었습니다.');
     }
   });
   const onValid = async () => {
@@ -111,54 +116,56 @@ export default function Reply() {
 
   return (
     <div className="border  border-neutral-600 w-full rounded-t-2xl relative">
-      <form action={onValid}>
-        <div className="absolute size-5 left-3 top-3">
-          {userInfo?.avatar === null ? (
-            <UserIcon />
-          ) : (
-            <Image src={userInfo?.avatar + ''} alt="이미지" className="object-cover" fill />
-          )}
-        </div>
-        <Input
-          $name="reply"
-          {...register('reply')}
-          required
-          placeholder="Post your reply"
-          onChange={onChange}
-          $errors={[errors.reply?.message ?? '']}
-        />
+      {userInfo ? (
+        <form action={onValid}>
+          <div className="absolute size-5 left-3 top-3">
+            {userInfo?.avatar === 0 ? (
+              <UserIcon />
+            ) : (
+              <Image src={userInfo?.avatar + ''} alt="이미지" className="object-cover" fill />
+            )}
+          </div>
+          <Input
+            $name="reply"
+            {...register('reply')}
+            required
+            placeholder="Post your reply"
+            onChange={onChange}
+            $errors={[errors.reply?.message ?? '']}
+          />
 
-        <div
-          className="aspect-square mt-3 rounded-2xl overflow-hidden"
-          style={{
-            backgroundImage: `url(${preview})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            display: `${preview === '' ? 'none' : 'flex'}`,
-          }}
-        ></div>
-        <div className="flex items-center p-2 justify-between ">
-          <div className="w-5"></div>
-          <div className="aspect-square flex-1 h-5 *:hover:cursor-pointer text-blue-600 flex items-center gap-5 font-light">
-            <label htmlFor="photo">
-              <PhotoIcon className="size-5" />
-            </label>
-            <input
-              ref={inputRef}
-              onChange={onImageChange}
-              type="file"
-              id="photo"
-              name="photo"
-              accept="image/*"
-              className="hidden"
-            />
-            <GifIcon className="size-5" />
+          <div
+            className="aspect-square mt-3 rounded-2xl overflow-hidden"
+            style={{
+              backgroundImage: `url(${preview})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              display: `${preview === '' ? 'none' : 'flex'}`,
+            }}
+          ></div>
+          <div className="flex items-center p-2 justify-between ">
+            <div className="w-5"></div>
+            <div className="aspect-square flex-1 h-5 *:hover:cursor-pointer text-blue-600 flex items-center gap-5 font-light">
+              <label htmlFor="photo">
+                <PhotoIcon className="size-5" />
+              </label>
+              <input
+                ref={inputRef}
+                onChange={onImageChange}
+                type="file"
+                id="photo"
+                name="photo"
+                accept="image/*"
+                className="hidden"
+              />
+              <GifIcon className="size-5" />
+            </div>
+            <div className="w-20 h-10">
+              <Button $text="Reply" $btn_type="white" $disabled={checkInputDisabled()} />
+            </div>
           </div>
-          <div className="w-20 h-10">
-            <Button $text="Reply" $btn_type="white" $disabled={checkInputDisabled()} />
-          </div>
-        </div>
-      </form>
+        </form>
+      ) : null}
     </div>
   );
 }

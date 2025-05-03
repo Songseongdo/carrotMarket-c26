@@ -2,10 +2,22 @@ import { HeartIcon, ChatBubbleOvalLeftIcon, ArrowLeftIcon } from '@heroicons/rea
 import { PhotoIcon, UserIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { formatToTimeAgo } from '@/util';
-import { getTweetInfo, getTweetUserInfo, TweetType } from './acttions';
+import { getTweetInfo, getTweetUserInfo, TweetType } from './actions';
 import { notFound } from 'next/navigation';
-import { getSessionUserInfo } from '@/util/async';
 import Reply from '@/components/reply';
+import ReplyList from '@/components/reply-list';
+import { unstable_cache as NextCache } from 'next/cache';
+
+export const dynamic = 'auto'; // 기본
+
+const getCachedtweetInfo = NextCache(async (id: number) => getTweetInfo(id), ['tweet-info'], {
+  tags: ['tweet'],
+});
+const getCachedtweetUserInfo = NextCache(
+  async (id: number) => getTweetUserInfo(id),
+  ['tweet-userinfo'],
+  { tags: ['tweet'] },
+);
 
 export default async function TweetsDetail({ params }: { params: { id: string } }) {
   const id = Number(params.id);
@@ -13,13 +25,10 @@ export default async function TweetsDetail({ params }: { params: { id: string } 
     return notFound();
   }
 
-  const TweetInfo: TweetType = await getTweetInfo(id);
-  if (!TweetInfo) {
-    return notFound();
-  }
+  const tweetInfo: TweetType = await getCachedtweetInfo(id);
+  if (!tweetInfo) return notFound();
 
-  const TweetUser = await getTweetUserInfo(TweetInfo.userId!);
-  const sessionUser = await getSessionUserInfo();
+  const TweetUser = await getCachedtweetUserInfo(tweetInfo.userId!);
 
   return (
     <div>
@@ -38,21 +47,21 @@ export default async function TweetsDetail({ params }: { params: { id: string } 
             <UserIcon className="w-8" />
             <div className="flex flex-col justify-center">
               <div className="flex gap-2 items-center">
-                <div>{TweetUser?.username || '알 수 없는 사용자'}</div>
+                <div>{TweetUser?.username! || '알 수 없는 사용자'}</div>
 
                 <div className="text-neutral-500">
                   <span className="mr-3">|</span>
-                  {formatToTimeAgo(TweetInfo.create_at)}
+                  {formatToTimeAgo(tweetInfo.create_at)}
                 </div>
               </div>
-              <div>{TweetInfo?.tweet}</div>
+              <div>{tweetInfo?.tweet}</div>
             </div>
           </div>
           <div className="w-full pl-8">
             <div className="w-full">
               <Link href={`/tweets/${id}`}>
-                {TweetInfo?.photo ? (
-                  <img src={TweetInfo?.photo} className="rounded-3xl" />
+                {tweetInfo?.photo ? (
+                  <img src={tweetInfo?.photo} className="rounded-3xl" />
                 ) : (
                   <PhotoIcon className="size-full" viewBox="1.4 3.6 21.3 16.7" />
                 )}
@@ -64,14 +73,14 @@ export default async function TweetsDetail({ params }: { params: { id: string } 
                   data-tip="Reply"
                 >
                   <ChatBubbleOvalLeftIcon className="size-6" />
-                  <div className=" ">0</div>
+                  <div className=" ">{tweetInfo.Response.length}</div>
                 </div>
                 <div
                   className="flex items-center gap-1 hover:cursor-pointer tooltip tooltip-secondary"
                   data-tip="Like"
                 >
                   <HeartIcon className="size-6 mt-[2px]" />
-                  <div className=" ">{TweetInfo?.Like.length}</div>
+                  <div className=" ">{tweetInfo?.Like.length}</div>
                 </div>
               </div>
             </div>
@@ -80,7 +89,13 @@ export default async function TweetsDetail({ params }: { params: { id: string } 
       </div>
 
       <div className="w-full mt-5">
-        <Reply />
+        <Reply tweetId={tweetInfo.id} />
+      </div>
+
+      <div>
+        {tweetInfo.Response.map((reply) => (
+          <ReplyList key={reply.id} id={reply.id} />
+        ))}
       </div>
     </div>
   );

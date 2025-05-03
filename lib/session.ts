@@ -1,13 +1,15 @@
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
+import { getIronSession } from 'iron-session';
+import { cookies } from 'next/headers';
 
-interface ISessionContent {
-	id?: number;
+export interface ISessionContent {
+  id?: number;
+  username?: string;
+  avatar?: number;
 }
 
 export default function getSession() {
-	return getIronSession<ISessionContent>(cookies(), {
-		cookieName: "karrot-infomation",
-		password: process.env.COOKIE_PASSWORD ?? "",
-	});
+  return getIronSession<ISessionContent>(cookies(), {
+    cookieName: 'karrot-infomation',
+    password: process.env.COOKIE_PASSWORD ?? '',
+  });
 }

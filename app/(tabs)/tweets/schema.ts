@@ -5,9 +5,16 @@ export const uploadSchema = z.object({
   contentType: z.string(),
 });
 
-export const tweetSchema = z.object({
+export const replySchema = z.object({
   reply: z.string(),
   url: z.string().optional(),
 });
+export type ReplyType = z.infer<typeof replySchema>;
 
-export type TweetType = z.infer<typeof tweetSchema>;
+export const latestReplySchema = z.object({
+  reply: z.string(),
+  url: z.string().optional(),
+  userId: z.string(),
+  tweetId: z.string(),
+});
+export type LatestTweetType = z.infer<typeof latestReplySchema>;

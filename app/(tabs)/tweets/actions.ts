@@ -2,10 +2,14 @@
 
 import { TWEET_PAGE_SIZE } from '@/lib/consts';
 import db from '@/lib/db';
+import getSession from '@/lib/session';
 import { FormActionResult } from '@/util';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { z } from 'zod';
+import { latestReplySchema } from './schema';
+import { Prisma } from '@/lib/generated/prisma';
+import { revalidateTag } from 'next/cache';
 
 const s3 = new S3Client({
   endpoint: `https://${process.env.CF_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -101,28 +105,28 @@ export async function uploadTweet(prevState: any, formData: FormData): Promise<F
 
 export async function uploadReply(formData: FormData): Promise<FormActionResult> {
   const data = {
-    comment: formData.get('comment'),
+    reply: formData.get('reply'),
     url: formData.get('url'),
+    userId: formData.get('userId'),
+    tweetId: formData.get('tweetId'),
   };
 
-  console.log(data);
-
-  return {
-    success: true,
-  };
-
-  const result = await tweetSchema.spa(data);
+  const result = await latestReplySchema.spa(data);
   if (result.success) {
-    const tweet = await db.tweet.create({
+    const reply = await db.response.create({
       data: {
-        tweet: result.data.comment,
+        comment: result.data.reply,
         photo: result.data.url,
+        userId: +result.data.userId,
+        tweetId: +result.data.tweetId,
       },
       select: {
         id: true,
       },
     });
-    if (tweet) {
+    if (reply) {
+      revalidateTag('tweet');
+
       return { success: true };
     } else {
       return {
@@ -137,3 +141,22 @@ export async function uploadReply(formData: FormData): Promise<FormActionResult>
     };
   }
 }
+
+export async function getUerInfo() {
+  const session = await getSession();
+  return session;
+}
+
+export async function getReplyInfo(id: number) {
+  const reply = await db.response.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      tweet: true,
+      user: true,
+    },
+  });
+  return reply;
+}
+export type ReplyType = Prisma.PromiseReturnType<typeof getReplyInfo>;
