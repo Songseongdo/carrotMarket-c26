@@ -4,32 +4,15 @@ import Input from "./input";
 import Button from "./button";
 import { use, useRef, useState } from "react";
 import { PhotoIcon, GifIcon } from "@heroicons/react/24/outline";
-import { uploadTweet } from "@/app/(tabs)/tweets/actions";
+import { uploadTweet, getSignedUploadUrl } from "@/app/(tabs)/tweets/actions";
 import { FormActionResult } from "@/util";
 import { useFormState } from "react-dom";
-
-export async function uploadToSignedUrl(signedUrl: string, file: File) {
-	try {
-		const res = await fetch(signedUrl, {
-			method: "PUT",
-			headers: {
-				"Content-Type": file.type,
-			},
-			body: file,
-		});
-
-		return res.ok;
-	} catch (err) {
-		console.error("업로드 에러", err);
-		return false;
-	}
-}
+import { uploadToSignedUrl } from "@/util/async";
 
 export default function Tweet() {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [input, setInput] = useState("");
 	const [preview, setPreview] = useState("");
-	const [uploading, setUploading] = useState(false);
 	const [signedUploadUrl, setSignedUploadUrl] = useState("");
 	const [uuid, setUuid] = useState("");
 
@@ -67,7 +50,6 @@ export default function Tweet() {
 		formData.append("filename", uniqueName);
 		formData.append("contentType", file.type);
 
-		const { getSignedUploadUrl } = await import("@/app/(tabs)/tweets/actions");
 		const result = await getSignedUploadUrl(formData);
 
 		if (!result?.url) {
@@ -85,8 +67,6 @@ export default function Tweet() {
 	};
 
 	const interceptAction = async (_: any, formData: FormData): Promise<FormActionResult> => {
-		setUploading(true);
-
 		const file = inputRef.current?.files?.[0];
 		if (!file) {
 			alert("파일 선택 필요");
@@ -103,7 +83,6 @@ export default function Tweet() {
 			alert("업로드 실패");
 		}
 
-		setUploading(false);
 
 		return uploadTweet(_, formData);
 	};
