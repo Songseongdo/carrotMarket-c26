@@ -4,7 +4,7 @@ import { formatToTimeAgo } from '@/util';
 import Link from 'next/link';
 import { PhotoIcon, UserIcon, HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import { HeartIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import { useEffect, useOptimistic, useState } from 'react';
 import { getTweetUserInfo } from '@/util/async';
 import { getUserInfo, setLike, setUnlike } from '@/app/(tabs)/tweets/actions';
 
@@ -44,6 +44,11 @@ export default function ListTweet({
   const [isLike, setIsLike] = useState(false);
   const [likeId, setLikeId] = useState(0);
 
+  const [optimisticLikes, addOptimisticLike] = useOptimistic(
+    Like.length,
+    (state, liked: boolean) => (liked ? state + 1 : state - 1),
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       const tweetUserInfo = await getTweetUserInfo(userId || 0);
@@ -70,13 +75,13 @@ export default function ListTweet({
     console.log(isLike, likeId);
 
     if (isLike) {
-      // unlike
+      addOptimisticLike(false);
       const rs = await setUnlike(likeId);
       if (rs) {
         setIsLike(false);
       }
     } else {
-      // like
+      addOptimisticLike(true);
       if (userInfo) {
         const rs = await setLike(userInfo!, id);
         if (rs) {
@@ -128,7 +133,7 @@ export default function ListTweet({
               >
                 {isLike ? <SolidHeartIcon className="size-5" /> : <HeartIcon className="size-5" />}
 
-                <div className="">{Like.length}</div>
+                <div className="">{optimisticLikes}</div>
               </div>
             </div>
           </div>
